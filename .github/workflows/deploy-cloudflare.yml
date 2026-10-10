@@ -1,0 +1,46 @@
+name: Deploy PhotoCraft to Cloudflare
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/photocraft-web/**'
+      - 'dist/web/**'
+      - 'wrangler.json'
+      - '.github/workflows/deploy-cloudflare.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy to Cloudflare Worker
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Prepare Web Assets
+        run: |
+          mkdir -p dist/web
+          # Download official release WASM bundle if not present
+          if [ ! -f "dist/web/photocraft-web-d0310536049c6524_bg.wasm" ]; then
+            echo "Fetching release wasm bundle..."
+            curl -sL https://github.com/storytold/photocraft/releases/download/v0.6.0/photocraft-web-0.6.0.zip -o bundle.zip
+            unzip -o -q bundle.zip -d dist/web/
+          fi
+          # Ensure latest updated index.html, favicon, og-image, robots, sitemap, llms take precedence
+          cp -f apps/photocraft-web/index.html dist/web/index.html 2>/dev/null || true
+          cp -f apps/photocraft-web/favicon.svg dist/web/favicon.svg 2>/dev/null || true
+          cp -f apps/photocraft-web/og-image.svg dist/web/og-image.svg 2>/dev/null || true
+
+      - name: Deploy via Wrangler
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy
