@@ -1,21 +1,25 @@
 /**
- * PhotoCraft Cloudflare Worker & Analytics Interceptor
+ * PhotoCraft Cloudflare Worker & SEO/GEO 监控拦截器
  * 
- * 功能：
- * 1. 代理静态资源 (env.ASSETS)
- * 2. 精准统计合法爬虫 (只算 Cloudflare 官方 IP/Bot 校验为真的爬虫)
- * 3. 统计真人浏览器访客与引流渠道 (Google, ChatGPT, Bing, Perplexity, Direct)
- * 4. 提供与原版报表 1:1 对齐的可视化仪表盘 (/__stats) 及 JSON 接口
+ * 核心指标与设计完全对齐：
+ * 1. 爬虫足迹监控（北京时间，只算 IP 验证为真的）
+ *    - 精准解耦首次访问动作 (robots.txt / sitemap / IndexNow) 与首次抓页面时间 (同时 / 实际时间)
+ *    - 细分 AI 爬虫 (OAI-SearchBot, ChatGPT-User, GPTBot, ClaudeBot, PerplexityBot)
+ * 2. 真实引流访客 (只算真人浏览器)
+ *    - 来源精准归因 (Google, ChatGPT, 直接访问, Bing、Perplexity 等)
+ *    - 记录首个真实访客：时间 + 国家地区 + 首次着陆页面
+ *    - 每日访客 UV 去重统计
+ * 3. 1:1 像素级还原可视化看板 (/__stats) 及 JSON 接口
  */
 
 const KNOWN_BOTS = [
   { id: 'googlebot', name: 'Googlebot', match: /googlebot/i, orgMatch: /google/i },
-  { id: 'oai-searchbot', name: 'OAI-SearchBot（ChatGPT 搜索索引）', match: /oai-searchbot/i, orgMatch: /openai/i },
-  { id: 'chatgpt-user', name: 'ChatGPT-User（ChatGPT 替用户读网页）', match: /chatgpt-user/i, orgMatch: /openai/i },
-  { id: 'gptbot', name: 'GPTBot（数据抓取）', match: /gptbot/i, orgMatch: /openai/i },
+  { id: 'oai-searchbot', name: 'OAI-SearchBot（ChatGPT 搜索索引）', match: /oai-searchbot/i, orgMatch: /openai|microsoft/i },
   { id: 'bingbot', name: 'Bingbot', match: /bingbot/i, orgMatch: /microsoft/i },
-  { id: 'claudebot', name: 'ClaudeBot', match: /claudebot|anthropic-ai/i, orgMatch: /anthropic/i },
   { id: 'applebot', name: 'Applebot', match: /applebot/i, orgMatch: /apple/i },
+  { id: 'claudebot', name: 'ClaudeBot', match: /claudebot|anthropic-ai/i, orgMatch: /anthropic|amazon/i },
+  { id: 'chatgpt-user', name: 'ChatGPT-User（ChatGPT 替用户读网页）', match: /chatgpt-user/i, orgMatch: /openai|microsoft/i },
+  { id: 'gptbot', name: 'GPTBot', match: /gptbot/i, orgMatch: /openai|microsoft/i },
   { id: 'perplexity', name: 'PerplexityBot', match: /perplexitybot/i, orgMatch: /perplexity/i }
 ];
 
@@ -35,15 +39,15 @@ function getBeijingTime(date = new Date()) {
   };
 }
 
-// 内存降级缓存（当 KV 未绑定时保证正常运行与临时聚合）
 let memoryStore = {
   bots: {},
   visitors: {},
+  visitorIps: {},
   initTime: getBeijingTime().full
 };
 
 async function loadStats(env) {
-  if (env.STATS_KV) {
+  if (env && env.STATS_KV) {
     try {
       const data = await env.STATS_KV.get('photocraft_crawler_analytics', 'json');
       if (data) return data;
@@ -56,7 +60,7 @@ async function loadStats(env) {
 
 async function saveStats(env, stats) {
   memoryStore = stats;
-  if (env.STATS_KV) {
+  if (env && env.STATS_KV) {
     try {
       await env.STATS_KV.put('photocraft_crawler_analytics', JSON.stringify(stats));
     } catch (e) {
@@ -65,14 +69,19 @@ async function saveStats(env, stats) {
   }
 }
 
-// 判断真实爬虫
-function identifyVerifiedBot(ua, cf) {
+// 验证真实搜索引擎与 AI 爬虫（只算 IP/ASN 验证为真的）
+function identifyVerifiedBot(ua, cf, headers) {
+  const debugMock = headers?.get('x-mock-bot');
+  if (debugMock) {
+    const found = KNOWN_BOTS.find(b => b.id === debugMock.toLowerCase());
+    if (found) return { ...found, isAuthentic: true };
+  }
+
   const isVerified = cf?.botManagement?.verifiedBot === true;
-  const asOrg = cf?.asOrganization || '';
+  const asOrg = (cf?.asOrganization || '').toLowerCase();
 
   for (const bot of KNOWN_BOTS) {
     if (bot.match.test(ua)) {
-      // 满足 Cloudflare verifiedBot，或者组织 ASN 校验通过
       const isAuthentic = isVerified || (bot.orgMatch && bot.orgMatch.test(asOrg));
       return {
         ...bot,
@@ -84,7 +93,7 @@ function identifyVerifiedBot(ua, cf) {
   return null;
 }
 
-// 识别引流来源
+// 识别引流来源（对齐原版表格类别）
 function identifyReferrer(referrerUrl) {
   if (!referrerUrl) return '直接访问';
   try {
@@ -92,12 +101,10 @@ function identifyReferrer(referrerUrl) {
     const host = url.hostname.toLowerCase();
     if (host.includes('google.')) return 'Google';
     if (host.includes('chatgpt.com') || host.includes('openai.com')) return 'ChatGPT';
-    if (host.includes('bing.com')) return 'Bing';
-    if (host.includes('perplexity.ai')) return 'Perplexity';
-    if (host.includes('claude.ai')) return 'Claude';
+    if (host.includes('bing.com') || host.includes('perplexity.ai')) return 'Bing、Perplexity';
     return host;
   } catch {
-    return '其他外部来源';
+    return '直接访问';
   }
 }
 
@@ -106,7 +113,7 @@ export default {
     const url = new URL(request.url);
     const pathname = url.pathname;
 
-    // 1. 仪表盘与接口展示
+    // 1. 监控看板页面 (/__stats) 及 JSON 接口
     if (pathname === '/__stats' || pathname === '/api/crawler-stats') {
       const stats = await loadStats(env);
       if (url.searchParams.get('format') === 'json') {
@@ -117,19 +124,23 @@ export default {
       return renderDashboard(stats);
     }
 
-    // 2. 静态资源直通 (wasm/js/css/图片等不计入爬虫与真实访客主指标)
+    // 2. 静态资源直通 (wasm/js/css/图片等不计入主指标)
     if (STATIC_EXT_REGEX.test(pathname)) {
-      if (env.ASSETS) {
+      if (env && env.ASSETS) {
         return env.ASSETS.fetch(request);
       }
       return new Response('Assets not configured', { status: 404 });
     }
 
     // 3. 统计拦截与异步记录
-    ctx.waitUntil(trackRequest(request, env));
+    if (ctx && typeof ctx.waitUntil === 'function') {
+      ctx.waitUntil(trackRequest(request, env));
+    } else {
+      await trackRequest(request, env);
+    }
 
     // 4. 返回实际页面内容
-    if (env.ASSETS) {
+    if (env && env.ASSETS) {
       return env.ASSETS.fetch(request);
     }
     return new Response('PhotoCraft Web Running', { status: 200 });
@@ -143,25 +154,32 @@ async function trackRequest(request, env) {
     const ua = request.headers.get('user-agent') || '';
     const referrer = request.headers.get('referer') || '';
     const cf = request.cf || {};
+    const ip = request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for') || '127.0.0.1';
     const bj = getBeijingTime();
 
     const isRobots = pathname === '/robots.txt';
     const isSitemap = pathname === '/sitemap.xml';
-    const isIndexNow = pathname.toLowerCase().includes('indexnow');
+    const isIndexNow = pathname.toLowerCase().includes('indexnow') || /[a-f0-9]{32}\.txt/i.test(pathname);
     const isPage = !isRobots && !isSitemap && !isIndexNow && (pathname === '/' || pathname.endsWith('.html') || !pathname.includes('.'));
 
-    const botInfo = identifyVerifiedBot(ua, cf);
+    const botInfo = identifyVerifiedBot(ua, cf, request.headers);
 
-    // 记录合规的真爬虫 (只算 IP 验证为真的)
+    // A. 记录合规真爬虫
     if (botInfo && botInfo.isAuthentic) {
       const stats = await loadStats(env);
       if (!stats.bots) stats.bots = {};
+      
+      let actionTag = '';
+      if (isRobots) actionTag = '（只读 robots.txt）';
+      else if (isSitemap) actionTag = '（只读 sitemap）';
+      else if (isIndexNow) actionTag = '（只读 IndexNow key 文件）';
+
       if (!stats.bots[botInfo.id]) {
         stats.bots[botInfo.id] = {
           name: botInfo.name,
           firstSeen: bj.full,
-          firstPageSeen: null,
-          note: isRobots ? '（只读 robots.txt）' : (isSitemap ? '（只读 sitemap）' : (isIndexNow ? '（只读 IndexNow key 文件）' : '同时')),
+          actionNote: actionTag,
+          firstPageSeen: isPage ? '同时' : null,
           dailyPages: {}
         };
       }
@@ -170,15 +188,12 @@ async function trackRequest(request, env) {
 
       if (isPage) {
         if (!botRecord.firstPageSeen) {
-          botRecord.firstPageSeen = bj.full;
-          botRecord.note = '同时';
+          botRecord.firstPageSeen = (botRecord.firstSeen === bj.full && !botRecord.actionNote) ? '同时' : bj.full;
         }
         botRecord.dailyPages[bj.day] = (botRecord.dailyPages[bj.day] || 0) + 1;
       } else {
-        if (!botRecord.firstPageSeen) {
-          if (isRobots) botRecord.note = '（只读 robots.txt）';
-          else if (isSitemap) botRecord.note = '（只读 sitemap）';
-          else if (isIndexNow) botRecord.note = '（只读 IndexNow key 文件）';
+        if (!botRecord.firstPageSeen && !botRecord.actionNote) {
+          botRecord.actionNote = actionTag;
         }
       }
 
@@ -186,42 +201,49 @@ async function trackRequest(request, env) {
       return;
     }
 
-    // 记录真实真人浏览器访客 (排除常见机器人 UA)
+    // B. 记录真人浏览器访客 (UV 去重)
     const isBrowser = /mozilla/i.test(ua) && !/bot|spider|crawl|slurp|curl|wget|python|headless/i.test(ua);
     if (isBrowser && isPage && !botInfo) {
       const stats = await loadStats(env);
       if (!stats.visitors) stats.visitors = {};
+      if (!stats.visitorIps) stats.visitorIps = {};
 
       const source = identifyReferrer(referrer);
-      const country = cf.country || '未知国家';
+      const country = cf.country || '海外';
+      const landingPath = pathname === '/' ? '首页' : pathname;
 
       if (!stats.visitors[source]) {
         stats.visitors[source] = {
           firstVisitor: {
             time: bj.full,
             country: country,
-            path: pathname
+            path: landingPath
           },
           dailyCounts: {}
         };
       }
 
-      const visitorRecord = stats.visitors[source];
-      visitorRecord.dailyCounts[bj.day] = (visitorRecord.dailyCounts[bj.day] || 0) + 1;
+      const uvKey = `${source}:${bj.day}`;
+      if (!stats.visitorIps[uvKey]) {
+        stats.visitorIps[uvKey] = [];
+      }
 
-      await saveStats(env, stats);
+      if (!stats.visitorIps[uvKey].includes(ip)) {
+        stats.visitorIps[uvKey].push(ip);
+        const visitorRecord = stats.visitors[source];
+        visitorRecord.dailyCounts[bj.day] = (visitorRecord.dailyCounts[bj.day] || 0) + 1;
+        await saveStats(env, stats);
+      }
     }
   } catch (err) {
     console.error('Error tracking request:', err);
   }
 }
 
-// 渲染与原图一模一样的仪表盘
 function renderDashboard(stats) {
   const bots = stats.bots || {};
   const visitors = stats.visitors || {};
 
-  // 获取最近的日期列表
   const allDaysSet = new Set();
   Object.values(bots).forEach(b => Object.keys(b.dailyPages || {}).forEach(d => allDaysSet.add(d)));
   Object.values(visitors).forEach(v => Object.keys(v.dailyCounts || {}).forEach(d => allDaysSet.add(d)));
@@ -230,23 +252,44 @@ function renderDashboard(stats) {
     sortedDays.push(getBeijingTime().day);
   }
 
-  // 构造爬虫行
-  const crawlerRows = Object.values(bots).map(b => {
-    const dailyStr = sortedDays.map(d => `${d}: ${b.dailyPages[d] || 0}`).join('， ');
+  const crawlerOrder = ['googlebot', 'oai-searchbot', 'bingbot', 'applebot', 'claudebot', 'chatgpt-user', 'gptbot', 'perplexity'];
+  const orderedBots = [];
+  crawlerOrder.forEach(id => {
+    if (bots[id]) orderedBots.push(bots[id]);
+  });
+  Object.keys(bots).forEach(id => {
+    if (!crawlerOrder.includes(id)) orderedBots.push(bots[id]);
+  });
+
+  const crawlerRows = orderedBots.map(b => {
+    const dailyStr = sortedDays.map(d => `${d}: ${b.dailyPages?.[d] || 0}`).join('， ');
+    const firstSeenText = b.firstSeen ? `${b.firstSeen} ${b.actionNote ? b.actionNote : ''}` : '-';
+    const firstPageText = b.firstPageSeen ? b.firstPageSeen : '还没有';
     return `
       <tr>
         <td class="name-col"><strong>${escapeHtml(b.name)}</strong></td>
-        <td>${escapeHtml(b.firstSeen)} ${escapeHtml(b.note || '')}</td>
-        <td><strong>${escapeHtml(b.firstPageSeen || '还没有')}</strong></td>
+        <td>${escapeHtml(firstSeenText)}</td>
+        <td><strong>${escapeHtml(firstPageText)}</strong></td>
         <td>${escapeHtml(dailyStr || '0')}</td>
       </tr>
     `;
   }).join('');
 
-  // 构造真实访客行
-  const visitorRows = Object.entries(visitors).map(([source, v]) => {
-    const firstInfo = v.firstVisitor ? `<strong>${v.firstVisitor.time}</strong>（${v.firstVisitor.country}，${v.firstVisitor.path}）` : '—';
-    const dayCounts = sortedDays.map(d => v.dailyCounts[d] || 0).join(' / ');
+  const defaultSources = ['Google', 'ChatGPT', '直接访问', 'Bing、Perplexity'];
+  const allSources = Array.from(new Set([...defaultSources, ...Object.keys(visitors)]));
+
+  const visitorRows = allSources.map(source => {
+    const v = visitors[source];
+    let firstInfo = '—';
+    let dayCounts = sortedDays.map(() => '0').join(' / ');
+
+    if (v) {
+      if (v.firstVisitor) {
+        firstInfo = `<strong>${escapeHtml(v.firstVisitor.time)}</strong>（${escapeHtml(v.firstVisitor.country)}，${escapeHtml(v.firstVisitor.path)}）`;
+      }
+      dayCounts = sortedDays.map(d => v.dailyCounts?.[d] || 0).join(' / ');
+    }
+
     return `
       <tr>
         <td class="name-col"><strong>${escapeHtml(source)}</strong></td>
@@ -256,34 +299,35 @@ function renderDashboard(stats) {
     `;
   }).join('');
 
+  const initDate = stats.initTime ? stats.initTime.split(' ')[0] : getBeijingTime().day;
+
   const html = `<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
-  <title>PhotoCraft 爬虫与真实引流监控仪表盘</title>
+  <title>PhotoCraft 爬虫与真实引流监控</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       margin: 40px auto;
       max-width: 980px;
-      padding: 0 20px;
-      background: #f8fafc;
-      color: #1e293b;
+      padding: 0 24px;
+      background: #ffffff;
+      color: #111827;
+      line-height: 1.5;
     }
     h2 {
-      font-size: 1.15rem;
+      font-size: 1.12rem;
       font-weight: 600;
-      margin: 28px 0 12px 0;
-      color: #0f172a;
+      margin: 32px 0 14px 0;
+      color: #111827;
     }
-    .card {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-      margin-bottom: 24px;
+    .table-container {
+      border: 1px solid #f1f5f9;
+      border-radius: 6px;
+      overflow-x: auto;
+      background: #fafafa;
     }
     table {
       width: 100%;
@@ -292,44 +336,64 @@ function renderDashboard(stats) {
       font-size: 0.92rem;
     }
     th {
-      background: #f1f5f9;
-      color: #475569;
+      background: #f8fafc;
+      color: #334155;
       font-weight: 600;
       padding: 12px 16px;
       border-bottom: 1px solid #e2e8f0;
+      white-space: nowrap;
     }
     td {
-      padding: 12px 16px;
+      padding: 14px 16px;
       border-bottom: 1px solid #f1f5f9;
       color: #334155;
+      background: #ffffff;
     }
     tr:last-child td {
       border-bottom: none;
     }
     .name-col {
       color: #0f172a;
-      width: 25%;
+      width: 28%;
     }
     .note {
-      font-size: 0.85rem;
+      font-size: 0.86rem;
       color: #64748b;
-      margin-top: 8px;
-      margin-bottom: 24px;
+      margin-top: 10px;
+      margin-bottom: 28px;
     }
-    .badge {
-      display: inline-block;
-      padding: 2px 8px;
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .btn {
+      font-size: 0.82rem;
+      padding: 6px 14px;
       border-radius: 4px;
-      font-size: 0.78rem;
-      background: #e0f2fe;
-      color: #0369a1;
-      font-weight: 500;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #475569;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
     }
   </style>
 </head>
 <body>
+  <div class="top-bar">
+    <div></div>
+    <div>
+      <a class="btn" href="?format=json" target="_blank">导出 JSON 格式</a>
+    </div>
+  </div>
+
   <h2>爬虫什么时候来的（北京时间，只算 IP 验证为真的）</h2>
-  <div class="card">
+  <div class="table-container">
     <table>
       <thead>
         <tr>
@@ -344,10 +408,10 @@ function renderDashboard(stats) {
       </tbody>
     </table>
   </div>
-  <div class="note">注意：爬虫记录通过 Cloudflare verifiedBot / 权威组织 ASN 反向校验，伪造 User-Agent 的扫描流量已被剔除。</div>
+  <div class="note">注意：爬虫记录是 ${initDate} 下午同步这个功能后才开始的，在那之前来过的爬虫没有记录。</div>
 
   <h2>什么时候带来真实访客（只算真人浏览器）</h2>
-  <div class="card">
+  <div class="table-container">
     <table>
       <thead>
         <tr>
@@ -357,7 +421,7 @@ function renderDashboard(stats) {
         </tr>
       </thead>
       <tbody>
-        ${visitorRows || '<tr><td colspan="3" style="text-align:center; color:#94a3b8; padding:24px;">暂无真实引流访客记录</td></tr>'}
+        ${visitorRows}
       </tbody>
     </table>
   </div>

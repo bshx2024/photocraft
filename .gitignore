@@ -12,3 +12,4 @@ target/
 *.log
 __pycache__/
 .wrangler/
+scripts/stats-local.json
