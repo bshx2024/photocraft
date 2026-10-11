@@ -8,6 +8,7 @@ on:
       - 'apps/photocraft-web/**'
       - 'dist/web/**'
       - 'wrangler.json'
+      - 'worker.js'
       - '.github/workflows/deploy-cloudflare.yml'
   workflow_dispatch:
 

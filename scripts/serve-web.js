@@ -27,8 +27,56 @@ const MIME_TYPES = {
   '.xml': 'application/xml; charset=utf-8'
 };
 
+const localStats = {
+  bots: {},
+  visitors: {}
+};
+
+function getBjTime() {
+  const d = new Date();
+  const beijing = new Date(d.getTime() + (8 * 60 + d.getTimezoneOffset()) * 60000);
+  const m = String(beijing.getMonth() + 1).padStart(2, '0');
+  const day = String(beijing.getDate()).padStart(2, '0');
+  const h = String(beijing.getHours()).padStart(2, '0');
+  const min = String(beijing.getMinutes()).padStart(2, '0');
+  return {
+    full: `${m}-${day} ${h}:${min}`,
+    day: `${m}-${day}`
+  };
+}
+
 const server = http.createServer((req, res) => {
-  let reqPath = decodeURIComponent(req.url.split('?')[0]);
+  const parsedUrl = new URL(req.url, `http://${req.headers.host || '127.0.0.1'}`);
+  let reqPath = decodeURIComponent(parsedUrl.pathname);
+
+  // 本地端点：查看爬虫与访客监控
+  if (reqPath === '/__stats' || reqPath === '/api/crawler-stats') {
+    if (parsedUrl.searchParams.get('format') === 'json') {
+      res.setHeader('Content-Type', 'application/json; charset=utf-8');
+      res.end(JSON.stringify(localStats, null, 2));
+      return;
+    }
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.end(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>本地统计</title></head><body style="font-family:sans-serif;padding:20px;"><h2>PhotoCraft 本地开发监控</h2><pre>${JSON.stringify(localStats, null, 2)}</pre></body></html>`);
+    return;
+  }
+
+  // 模拟请求记录
+  const ua = req.headers['user-agent'] || '';
+  const ref = req.headers['referer'] || '';
+  const bj = getBjTime();
+  if (/googlebot/i.test(ua)) {
+    if (!localStats.bots['googlebot']) localStats.bots['googlebot'] = { name: 'Googlebot', firstSeen: bj.full, firstPageSeen: bj.full, dailyPages: {} };
+    localStats.bots['googlebot'].dailyPages[bj.day] = (localStats.bots['googlebot'].dailyPages[bj.day] || 0) + 1;
+  } else if (/oai-searchbot/i.test(ua)) {
+    if (!localStats.bots['oai-searchbot']) localStats.bots['oai-searchbot'] = { name: 'OAI-SearchBot', firstSeen: bj.full, firstPageSeen: bj.full, dailyPages: {} };
+    localStats.bots['oai-searchbot'].dailyPages[bj.day] = (localStats.bots['oai-searchbot'].dailyPages[bj.day] || 0) + 1;
+  } else if (!/bot|spider|crawl/i.test(ua) && (reqPath === '/' || reqPath.endsWith('.html'))) {
+    const src = ref.includes('google') ? 'Google' : (ref.includes('chatgpt') ? 'ChatGPT' : '直接访问');
+    if (!localStats.visitors[src]) localStats.visitors[src] = { firstVisitor: { time: bj.full, country: '本地测试', path: reqPath }, dailyCounts: {} };
+    localStats.visitors[src].dailyCounts[bj.day] = (localStats.visitors[src].dailyCounts[bj.day] || 0) + 1;
+  }
+
   if (reqPath === '/' || reqPath === '') {
     reqPath = '/index.html';
   }
