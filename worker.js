@@ -130,7 +130,10 @@ export default {
       const stats = await loadStats(env);
       if (url.searchParams.get('format') === 'json') {
         return new Response(JSON.stringify(stats, null, 2), {
-          headers: { 'Content-Type': 'application/json; charset=utf-8' }
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8',
+            'Cache-Control': 'no-store, no-cache, must-revalidate'
+          }
         });
       }
       return renderDashboard(stats);
@@ -441,7 +444,10 @@ function renderDashboard(stats) {
 </html>`;
 
   return new Response(html, {
-    headers: { 'Content-Type': 'text/html; charset=utf-8' }
+    headers: {
+      'Content-Type': 'text/html; charset=utf-8',
+      'Cache-Control': 'no-store, no-cache, must-revalidate'
+    }
   });
 }
 
