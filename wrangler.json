@@ -4,5 +4,11 @@
   "compatibility_date": "2024-09-23",
   "assets": {
     "directory": "./dist/web"
-  }
+  },
+  "kv_namespaces": [
+    {
+      "binding": "STATS_KV",
+      "id": "01c9636477c24b9cbef513e1c94f410e"
+    }
+  ]
 }

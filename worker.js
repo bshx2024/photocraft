@@ -43,22 +43,34 @@ let memoryStore = {
   bots: {},
   visitors: {},
   visitorIps: {},
-  initTime: getBeijingTime().full
+  initTime: null
 };
 
 async function loadStats(env) {
   if (env && env.STATS_KV) {
     try {
       const data = await env.STATS_KV.get('photocraft_crawler_analytics', 'json');
-      if (data) return data;
+      if (data) {
+        if (!data.bots) data.bots = {};
+        if (!data.visitors) data.visitors = {};
+        if (!data.visitorIps) data.visitorIps = {};
+        if (!data.initTime) data.initTime = getBeijingTime().full;
+        return data;
+      }
     } catch (e) {
       console.error('Failed to read from STATS_KV', e);
     }
+  }
+  if (!memoryStore.initTime) {
+    memoryStore.initTime = getBeijingTime().full;
   }
   return memoryStore;
 }
 
 async function saveStats(env, stats) {
+  if (!stats.initTime) {
+    stats.initTime = getBeijingTime().full;
+  }
   memoryStore = stats;
   if (env && env.STATS_KV) {
     try {
