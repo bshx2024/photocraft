@@ -127,6 +127,22 @@ export default {
 
     // 1. 监控看板页面 (/__stats) 及 JSON 接口
     if (pathname === '/__stats' || pathname === '/api/crawler-stats') {
+      if (url.searchParams.get('action') === 'reset') {
+        const freshStats = {
+          bots: {},
+          visitors: {},
+          visitorIps: {},
+          initTime: getBeijingTime().full
+        };
+        await saveStats(env, freshStats);
+        return new Response(JSON.stringify({ success: true, message: 'Stats reset successfully' }), {
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8',
+            'Cache-Control': 'no-store, no-cache, must-revalidate'
+          }
+        });
+      }
+
       const stats = await loadStats(env);
       if (url.searchParams.get('format') === 'json') {
         return new Response(JSON.stringify(stats, null, 2), {
