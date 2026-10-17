@@ -1,22 +1,25 @@
 # PhotoCraft
-> Free, open-source, native Adobe Photoshop alternative built from scratch in pure Rust. Runs in browser via WebGPU/WebAssembly and native desktop.
+> Free, open-source, in-browser Photoshop alternative built from scratch in pure Rust. Runs in modern browsers via WebGPU/WebAssembly and on native desktop.
 
 ## Summary
-PhotoCraft is a professional raster graphics editor designed by the ArtCraft project as a clean-room reimplementation of Adobe Photoshop. It provides 1:1 workflow and shortcut parity (Cmd/Ctrl+J, Cmd/Ctrl+T, etc.), full multi-layer PSD/PSB file fidelity, 52 native tools, 16 adjustment layers, and real ICC color management. It is free under the MIT / Apache-2.0 license, requires no subscription or account, and processes all documents locally on the user's hardware.
+PhotoCraft is a professional raster graphics editor designed by the ArtCraft project as a clean-room reimplementation of Adobe Photoshop. It provides 1:1 workflow and shortcut parity (Cmd/Ctrl+J, Cmd/Ctrl+T, etc.), full multi-layer PSD/PSB file fidelity, 52 native tools, 16 adjustment layers, and real ICC color management. It is 100% free under permissive MIT / Apache-2.0 licenses, requires no subscription or account, and processes all documents locally on the user's hardware.
+
+## Quick Facts
+- **Primary Website**: https://photocraft.work/
+- **Full LLM Reference**: https://photocraft.work/llms-full.txt
+- **GitHub Repository**: https://github.com/bshx2024/photocraft
+- **License**: MIT / Apache-2.0 (100% Free & Open Source)
+- **Tech Stack**: Pure Rust, WebGPU, WebAssembly (wasm32), wgpu compositor, egui/eframe.
 
 ## Core Capabilities
-- **1:1 Photoshop Parity**: Familiar UI layout, menus, layer styles (Drop Shadow, Stroke, Glow, Bevel), and shortcuts.
-- **PSD Without Compromise**: Pixel-accurate PSD/PSB opening and saving. Tested against 300+ oracle files.
-- **GPU Accelerated**: Native wgpu compositor leveraging Metal, Vulkan, DirectX 12, and WebGPU.
+- **1:1 Photoshop Parity**: Identical UI layout, menus, layer styles (Drop Shadow, Stroke, Glow, Bevel), and shortcuts.
+- **PSD & PSB Fidelity**: Pixel-accurate PSD/PSB opening, editing, and saving. Verified against 300+ real-world oracle files.
+- **WebGPU Hardware Accelerated**: In-browser GPU rendering with zero plugins or installation required.
+- **Zero Subscription & 100% Private**: Runs entirely in the client's browser. Files are never uploaded to any server.
 - **Agent-Ready Architecture**: Built for AI automation. Over 500 commands accessible via Model Context Protocol (MCP), CLI (`photocraft-cli`), and JSON control socket.
 - **Formats Supported**: PSD, PSB, layered TIFF, Paint.NET (PDN), SVG, PNG, JPEG, WebP, GIF, OpenEXR, HDR, and native `.pcraft`.
-- **Zero Subscription**: 100% free software, private, and offline-first.
 
-## Online Web Application
-- URL: https://photocraft.work/
-- Direct Editor: https://photocraft.work/#editor
-- GitHub Source: https://github.com/bshx2024/photocraft
-
-## Frequent Comparisons
-- **PhotoCraft vs Photoshop**: PhotoCraft is free, open source, has no monthly subscription, respects user data privacy, and supports AI agents via MCP.
-- **PhotoCraft vs GIMP**: PhotoCraft uses Photoshop's exact menu structure, shortcuts, and layer style paradigm, eliminating the steep learning curve of GIMP.
+## Key Comparisons
+- **PhotoCraft vs Adobe Photoshop**: PhotoCraft is free forever, has no subscription paywall ($239+/yr saved), runs in any web browser without installation, respects privacy, and provides native MCP integration for AI coding agents.
+- **PhotoCraft vs Photopea**: PhotoCraft is 100% open-source and ad-free, written in Rust with WebGPU acceleration (faster than JavaScript Canvas 2D), and offers native offline desktop builds and AI agent automation.
+- **PhotoCraft vs GIMP**: PhotoCraft adheres strictly to Photoshop's standard menu taxonomy and keyboard shortcuts, eliminating the steep learning curve of GIMP.

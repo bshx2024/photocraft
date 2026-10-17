@@ -4,13 +4,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-  <title>PhotoCraft Photoshop Alternative: Free Online PSD Editor</title>
+  <title>PhotoCraft: Free Online Photoshop Alternative &amp; Web PSD Editor</title>
   
-  <meta name="description" content="PhotoCraft is the premier free Photoshop alternative for layered PSD editing. Run 52 professional photo tools online with WebGPU speed and zero subscriptions.">
-  <meta name="keywords" content="photocraft, photocraft online, photocraft vs photoshop, adobe photocraft, photocraft download, free photoshop alternative, open source photoshop, photocraft mcp, photocraft ai, psd editor online">
+  <meta name="description" content="Open, edit, and save multi-layer PSD files online in your browser. PhotoCraft is the free, WebGPU-accelerated Photoshop alternative with 1:1 shortcuts, 52 tools, and zero subscriptions.">
+  <meta name="keywords" content="photocraft, photocraft web, photocraft online, photocraft photoshop alternative, free photoshop alternative, open source photoshop, psd editor online, psd viewer, web photoshop, photocraft vs photoshop">
   <meta name="author" content="PhotoCraft / Storytold">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <link rel="canonical" href="https://photocraft.work/">
+  <link rel="alternate" type="text/markdown" href="/llms.txt" title="LLM Context">
+  <link rel="alternate" type="text/markdown" href="/llms-full.txt" title="Full Technical LLM Reference">
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -20,16 +22,16 @@
   <!-- Open Graph / Social Cards -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://photocraft.work/">
-  <meta property="og:title" content="PhotoCraft Photoshop Alternative: Free Online PSD Editor">
-  <meta property="og:description" content="PhotoCraft is the premier free Photoshop alternative for layered PSD editing. Run 52 professional photo tools online with WebGPU speed and zero subscriptions.">
+  <meta property="og:title" content="PhotoCraft: Free Online Photoshop Alternative &amp; Web PSD Editor">
+  <meta property="og:description" content="Open, edit, and save multi-layer PSD files online in your browser. PhotoCraft is the free, WebGPU-accelerated Photoshop alternative with 1:1 shortcuts, 52 tools, and zero subscriptions.">
   <meta property="og:image" content="https://photocraft.work/og-image.svg">
   <meta property="og:site_name" content="PhotoCraft">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://photocraft.work/">
-  <meta name="twitter:title" content="PhotoCraft Photoshop Alternative: Free Online PSD Editor">
-  <meta name="twitter:description" content="PhotoCraft is the premier free Photoshop alternative for layered PSD editing. Run 52 professional photo tools online with WebGPU speed and zero subscriptions.">
+  <meta name="twitter:title" content="PhotoCraft: Free Online Photoshop Alternative &amp; Web PSD Editor">
+  <meta name="twitter:description" content="Open, edit, and save multi-layer PSD files online in your browser. PhotoCraft is the free, WebGPU-accelerated Photoshop alternative with 1:1 shortcuts, 52 tools, and zero subscriptions.">
   <meta name="twitter:image" content="https://photocraft.work/og-image.svg">
 
   <!-- Schema.org JSON-LD -->
@@ -44,6 +46,9 @@
         "url": "https://photocraft.work/",
         "applicationCategory": "DesignApplication",
         "operatingSystem": "Web, Windows, macOS, Linux, FreeBSD",
+        "sameAs": [
+          "https://github.com/bshx2024/photocraft"
+        ],
         "offers": {
           "@type": "Offer",
           "price": "0",
@@ -754,10 +759,10 @@
         <div class="tag-pill">
           ⚡ Open-Source in Pure Rust · WebGPU Acceleration · Public Alpha
         </div>
-        <h1>PhotoCraft Photoshop Alternative: Free Online PSD Editor</h1>
+        <h1>PhotoCraft: Free Online Photoshop Alternative &amp; Web PSD Editor</h1>
         <p class="lead">
-          <strong>Edit PSD Files. Create Without Limits.</strong><br>
-          A free, open-source image editor inspired by Photoshop — right in your browser. Open multi-layer PSD files, adjust colors, work with masks, and export your creations with zero subscriptions or tracking.
+          <strong>Open &amp; Edit PSD Files Online. Create Without Limits.</strong><br>
+          A free, open-source image editor inspired by Photoshop — running directly in your web browser with WebGPU acceleration. Open multi-layer PSD files, adjust colors, work with masks, and export your creations with zero subscriptions or tracking.
         </p>
         <div class="hero-actions">
           <button class="btn btn-primary" style="padding: 14px 28px; font-size: 16px;" onclick="launchEditor()">
@@ -876,8 +881,8 @@
 
       <!-- Comparison Section -->
       <section class="compare-section" id="vs-photoshop">
-        <h2 class="section-title">PhotoCraft Photoshop Alternative vs Adobe Photoshop &amp; GIMP</h2>
-        <p class="section-desc">Comparing the PhotoCraft Photoshop alternative with Adobe Photoshop and GIMP across cost, interface standards, PSD fidelity, and AI automation.</p>
+        <h2 class="section-title">PhotoCraft vs Adobe Photoshop, Photopea &amp; GIMP</h2>
+        <p class="section-desc">Comparing PhotoCraft with Adobe Photoshop, Photopea, and GIMP across cost, interface standards, PSD fidelity, and AI automation.</p>
         <div class="table-wrapper">
           <table class="compare-table">
             <thead>
@@ -885,6 +890,7 @@
                 <th>Feature / Capability</th>
                 <th>PhotoCraft</th>
                 <th>Adobe Photoshop</th>
+                <th>Photopea</th>
                 <th>GIMP</th>
               </tr>
             </thead>
@@ -893,42 +899,49 @@
                 <td><strong>Pricing &amp; Cost</strong></td>
                 <td><span class="tag-win">100% Free Open-Source</span></td>
                 <td>$239.88/year subscription</td>
+                <td>Ad-supported ($5/mo for no ads)</td>
                 <td>Free Open-Source</td>
               </tr>
               <tr>
                 <td><strong>Photoshop Shortcuts</strong></td>
                 <td><span class="tag-win">1:1 Photoshop Muscle Memory</span></td>
                 <td>Native Standard</td>
+                <td>Partial shortcut coverage</td>
                 <td>Steep learning curve, custom UI</td>
               </tr>
               <tr>
                 <td><strong>PSD File Fidelity</strong></td>
-                <td><span class="tag-win">Pixel-accurate Layered PSD</span></td>
+                <td><span class="tag-win">Pixel-accurate Layered PSD &amp; PSB</span></td>
                 <td>Native Standard</td>
+                <td>Good layer support</td>
                 <td>Frequently breaks layer styles</td>
               </tr>
               <tr>
                 <td><strong>Web Browser Access</strong></td>
                 <td><span class="tag-win">Full In-Browser WebGPU Editor</span></td>
                 <td>Subscription-locked Web App</td>
+                <td>In-browser (Canvas 2D)</td>
                 <td>No official web version</td>
               </tr>
               <tr>
                 <td><strong>AI Automation</strong></td>
-                <td><span class="tag-win">Native Automation &amp; CLI</span></td>
+                <td><span class="tag-win">Native MCP (Model Context Protocol)</span></td>
                 <td>Proprietary scripts only</td>
+                <td>Not supported</td>
                 <td>Script-Fu plugins only</td>
               </tr>
               <tr>
                 <td><strong>Data Privacy</strong></td>
-                <td><span class="tag-win">100% Local Offline Privacy</span></td>
+                <td><span class="tag-win">100% Client-Side Local</span></td>
                 <td>Mandatory Cloud Sync &amp; ID</td>
+                <td>Ad trackers &amp; third-party scripts</td>
                 <td>100% Local</td>
               </tr>
               <tr>
                 <td><strong>Engine Technology</strong></td>
-                <td><span class="tag-win">100% Pure Rust + wgpu</span></td>
+                <td><span class="tag-win">Pure Safe Rust + WebGPU</span></td>
                 <td>Legacy C++ Codebase</td>
+                <td>Closed-Source JavaScript</td>
                 <td>Legacy C (GTK) Codebase</td>
               </tr>
             </tbody>
@@ -1115,7 +1128,8 @@
           <ul>
             <li><a href="https://github.com/bshx2024/photocraft" target="_blank" rel="noopener">GitHub Repository</a></li>
             <li><a href="#mcp">AI Automation &amp; CLI</a></li>
-            <li><a href="/llms.txt">LLMs Knowledge Card</a></li>
+            <li><a href="/llms.txt">LLMs Context (llms.txt)</a></li>
+            <li><a href="/llms-full.txt">Full LLM Reference</a></li>
             <li><a href="/sitemap.xml">Sitemap</a></li>
           </ul>
         </div>

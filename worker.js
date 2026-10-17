@@ -20,7 +20,10 @@ const KNOWN_BOTS = [
   { id: 'claudebot', name: 'ClaudeBot', match: /claudebot|anthropic-ai/i, orgMatch: /anthropic|amazon/i },
   { id: 'chatgpt-user', name: 'ChatGPT-User（ChatGPT 替用户读网页）', match: /chatgpt-user/i, orgMatch: /openai|microsoft/i },
   { id: 'gptbot', name: 'GPTBot', match: /gptbot/i, orgMatch: /openai|microsoft/i },
-  { id: 'perplexity', name: 'PerplexityBot', match: /perplexitybot/i, orgMatch: /perplexity/i }
+  { id: 'perplexity', name: 'PerplexityBot', match: /perplexitybot/i, orgMatch: /perplexity/i },
+  { id: 'deepseek', name: 'DeepSeekBot', match: /deepseekbot/i, orgMatch: /deepseek/i },
+  { id: 'ccbot', name: 'CCBot（Common Crawl 语料库）', match: /ccbot/i, orgMatch: /amazon|common\s*crawl/i },
+  { id: 'bytespider', name: 'Bytespider（字节豆包）', match: /bytespider/i, orgMatch: /bytedance/i }
 ];
 
 const STATIC_EXT_REGEX = /\.(wasm|js|mjs|css|png|jpg|jpeg|gif|svg|ico|ttf|otf|woff|woff2|map)$/i;

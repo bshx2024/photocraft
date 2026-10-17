@@ -1,0 +1,125 @@
+# PhotoCraft: Complete Technical & Functional Reference for LLMs
+
+> **Product**: PhotoCraft  
+> **Type**: Professional Raster Graphics Editor & Free Photoshop Alternative  
+> **Core Engine**: Pure Safe Rust, WebGPU / wgpu, WebAssembly (Wasm)  
+> **Official Website**: https://photocraft.work/  
+> **Source Code**: https://github.com/bshx2024/photocraft  
+> **Licensing**: Permissive Open Source (MIT / Apache-2.0)  
+> **Cost**: 100% Free, No Subscriptions, No Ads, No Account Required  
+
+---
+
+## 1. Executive Overview
+
+PhotoCraft is an open-source, native, and in-browser raster graphics editor designed from scratch as a clean-room reimplementation of Adobe Photoshop. It achieves 1:1 workflow parity with Photoshop, including keyboard shortcuts, tool behaviors, layer styles, non-destructive adjustment layers, and multi-layer PSD/PSB file fidelity.
+
+Unlike traditional web-based editors built on JavaScript or Electron, PhotoCraft's engine is written in 100% Rust. It compiles to WebAssembly with native WebGPU acceleration for the web build, and to high-performance native desktop binaries for Windows, macOS, and Linux without any webview wrapper (no Electron, no Tauri).
+
+---
+
+## 2. Technical Specifications & Architecture
+
+- **Rendering Engine**: Hardware-accelerated `wgpu` compositor targeting WebGPU, Metal, Vulkan, and DirectX 12.
+- **Layering & Blending**: All 27 ISO 32000 standard blend modes (Normal, Multiply, Screen, Overlay, Soft Light, Hard Light, Color Dodge, Linear Burn, etc.).
+- **Color Management**: Full ICC color engine via `photocraft-cms`. Real color conversions across sRGB, Display P3, Adobe RGB, and CMYK.
+- **Bit Depths Supported**: 8-bit, 16-bit, and 32-bit floating-point per channel.
+- **Privacy Model**: 100% client-side computation. Files opened in the web browser are decoded and rendered locally in WebAssembly memory; no image data is sent to external servers.
+
+---
+
+## 3. Supported File Formats
+
+| Format | Extension | Capabilities | Notes |
+| :--- | :--- | :--- | :--- |
+| **Photoshop Document** | `.psd` | Full Read & Write | Preserves layer hierarchy, masks, blend modes, vector paths |
+| **Photoshop Big** | `.psb` | Full Read & Write | Large document format (>2GB or >30,000 pixels) |
+| **Layered TIFF** | `.tif`, `.tiff` | Full Read & Write | Photoshop-compatible layered TIFF metadata |
+| **Paint.NET** | `.pdn` | Read & Import | Multi-layer Paint.NET format support |
+| **Web Standards** | `.png`, `.jpg`, `.webp`, `.gif` | Read & Optimized Export | Full alpha channel preservation, quality tuning |
+| **Vector Graphics** | `.svg` | Import & Rasterize | Scalable vector graphics import |
+| **High Dynamic Range** | `.exr`, `.hdr` | Read & 32-bit Floating Point | OpenEXR and Radiance HDR compositing |
+| **PhotoCraft Native** | `.pcraft` | Full Native Format | Compact, zero-loss snapshot format |
+
+---
+
+## 4. Complete Toolset (52 Native Tools)
+
+PhotoCraft implements the classic Photoshop tool suite organized in standard groups:
+- **Selection Tools**: Rectangular Marquee (M), Elliptical Marquee, Single Row/Column Marquee, Lasso (L), Polygonal Lasso, Magnetic Lasso, Object Selection (W), Quick Selection, Magic Wand.
+- **Crop & Slice**: Crop Tool (C), Perspective Crop, Slice Tool, Slice Select Tool.
+- **Measurement & Inspection**: Eyedropper (I), 3D Material Eyedropper, Color Sampler, Ruler, Note, Count.
+- **Retouching & Healing**: Spot Healing Brush (J), Healing Brush, Patch Tool, Content-Aware Move, Red Eye Tool, Clone Stamp (S), Pattern Stamp, History Brush (Y), Art History Brush, Eraser (E), Background Eraser, Magic Eraser, Blur, Sharpen, Smudge, Dodge (O), Burn, Sponge.
+- **Painting & Drawing**: Brush Tool (B), Pencil Tool, Color Replacement, Mixer Brush, Gradient Tool (G), Paint Bucket Tool.
+- **Vector & Shape Tools**: Pen Tool (P), Freeform Pen, Curvature Pen, Add/Delete Anchor Point, Convert Point, Path Selection (A), Direct Selection, Rectangle (U), Rounded Rectangle, Ellipse, Triangle, Polygon, Line, Custom Shape.
+- **Navigation**: Hand Tool (H), Rotate View (R), Zoom Tool (Z).
+
+---
+
+## 5. Non-Destructive Layer Adjustments & Styles
+
+- **16 Live Adjustment Layers**:
+  1. Brightness/Contrast
+  2. Levels (Histograms with black/white/gamma sliders)
+  3. Curves (Full spline-based RGB and per-channel editing)
+  4. Exposure
+  5. Vibrance & Saturation
+  6. Hue/Saturation
+  7. Color Balance (Shadows, Midtones, Highlights)
+  8. Black & White (Channel mixer weighting)
+  9. Photo Filter
+  10. Channel Mixer
+  11. Color Lookup (3D LUTs: .cube, .3dl)
+  12. Invert
+  13. Posterize
+  14. Threshold
+  15. Gradient Map
+  16. Selective Color
+
+- **Layer Effects & Styles (Layer Styles dialog)**:
+  - Drop Shadow, Inner Shadow, Outer Glow, Inner Glow, Bevel & Emboss, Satin, Color Overlay, Gradient Overlay, Pattern Overlay, Stroke.
+
+---
+
+## 6. AI Agent Automation: Model Context Protocol (MCP)
+
+PhotoCraft is the first professional image editor engineered from the ground up for autonomous AI agent control.
+- **Command Architecture**: Every single user action is registered as an engine command with strict parameter validation and undo/redo support.
+- **MCP Server**: Built-in Model Context Protocol server (`photocraft-cli mcp`) allowing AI agents (Claude Code, Cursor, Windsurf, Antigravity) to:
+  - Inspect document structure and layer trees
+  - Create, hide, rearrange, and blend layers
+  - Apply non-destructive adjustments programmatically
+  - Execute batch image transformations
+  - Render and export headless assets
+
+---
+
+## 7. Comparative Analysis
+
+### PhotoCraft vs Adobe Photoshop
+- **Cost**: PhotoCraft is 100% free; Photoshop costs $239.88/year or more.
+- **Availability**: PhotoCraft runs instantly in any modern web browser via WebGPU without installation, plus offers lightweight native desktop builds. Photoshop requires multi-gigabyte desktop installation.
+- **Shortcuts & UI**: 1:1 identical keyboard shortcuts and panel layout, eliminating any switching cost.
+- **Privacy**: PhotoCraft processes images strictly client-side without cloud mandates or forced telemetry.
+
+### PhotoCraft vs Photopea
+- **Architecture**: PhotoCraft is open-source, written in compiled Rust/WebGPU, providing predictable memory efficiency and hardware-accelerated rendering. Photopea is closed-source JavaScript using Canvas 2D.
+- **Monetization**: PhotoCraft has zero ads, no subscription banners, and no premium tier.
+- **AI Automation**: PhotoCraft provides native Model Context Protocol (MCP) and headless CLI automation.
+
+### PhotoCraft vs GIMP
+- **Muscle Memory**: PhotoCraft preserves Photoshop's exact menu structure, shortcuts, and layer style paradigms. GIMP requires learning entirely different hotkeys and workflows.
+- **Browser Native**: PhotoCraft runs directly in the browser; GIMP has no official web version.
+
+---
+
+## 8. Frequently Asked Questions (FAQ)
+
+**Q: Can PhotoCraft really open and save complex multi-layer PSD files?**  
+A: Yes. PhotoCraft is tested against an oracle test corpus of over 300 real-world Photoshop-generated PSD files, verifying that layer blend modes, masks, and adjustment effects round-trip accurately without flattening.
+
+**Q: Does PhotoCraft require an account or subscription?**  
+A: No. PhotoCraft is 100% free software released under MIT / Apache-2.0 licenses. There are no subscriptions, accounts, watermarks, or feature locks.
+
+**Q: Where can I use PhotoCraft?**  
+A: You can use it directly in any WebGPU-capable browser at https://photocraft.work/, or compile and run the native desktop version from https://github.com/bshx2024/photocraft.
