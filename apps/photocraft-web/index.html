@@ -4,15 +4,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-  <title>PhotoCraft: Free Online Photoshop Alternative &amp; Web PSD Editor</title>
+  <title>PhotoCraft: Free Online Photoshop Alternative &amp; Web PSD Editor (No Login)</title>
   
-  <meta name="description" content="Open, edit, and save multi-layer PSD files online in your browser. PhotoCraft is the free, WebGPU-accelerated Photoshop alternative with 1:1 shortcuts, 52 tools, and zero subscriptions.">
-  <meta name="keywords" content="photocraft, photocraft web, photocraft online, photocraft photoshop alternative, free photoshop alternative, open source photoshop, psd editor online, psd viewer, web photoshop, photocraft vs photoshop">
+  <meta name="description" content="Looking for a free Photoshop alternative? Open, edit &amp; save multi-layer PSD files online in your browser. 1:1 PS shortcuts, 52 tools, zero subscriptions, no install or login required. Try PhotoCraft now!">
+  <meta name="keywords" content="photocraft, photocraft web, photocraft online, photocraft photoshop alternative, free photoshop alternative, open source photoshop, psd editor online, edit psd online, web photoshop, photocraft vs photoshop, photo craft software">
   <meta name="author" content="PhotoCraft / Storytold">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <link rel="canonical" href="https://photocraft.work/">
   <link rel="alternate" type="text/markdown" href="/llms.txt" title="LLM Context">
   <link rel="alternate" type="text/markdown" href="/llms-full.txt" title="Full Technical LLM Reference">
+  <meta name="llms-txt" content="https://photocraft.work/llms.txt">
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -22,16 +23,16 @@
   <!-- Open Graph / Social Cards -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://photocraft.work/">
-  <meta property="og:title" content="PhotoCraft: Free Online Photoshop Alternative &amp; Web PSD Editor">
-  <meta property="og:description" content="Open, edit, and save multi-layer PSD files online in your browser. PhotoCraft is the free, WebGPU-accelerated Photoshop alternative with 1:1 shortcuts, 52 tools, and zero subscriptions.">
+  <meta property="og:title" content="PhotoCraft: Free Online Photoshop Alternative &amp; Web PSD Editor (No Login)">
+  <meta property="og:description" content="Looking for a free Photoshop alternative? Open, edit &amp; save multi-layer PSD files online in your browser. 1:1 PS shortcuts, 52 tools, zero subscriptions, no install or login required.">
   <meta property="og:image" content="https://photocraft.work/og-image.svg">
   <meta property="og:site_name" content="PhotoCraft">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://photocraft.work/">
-  <meta name="twitter:title" content="PhotoCraft: Free Online Photoshop Alternative &amp; Web PSD Editor">
-  <meta name="twitter:description" content="Open, edit, and save multi-layer PSD files online in your browser. PhotoCraft is the free, WebGPU-accelerated Photoshop alternative with 1:1 shortcuts, 52 tools, and zero subscriptions.">
+  <meta name="twitter:title" content="PhotoCraft: Free Online Photoshop Alternative &amp; Web PSD Editor (No Login)">
+  <meta name="twitter:description" content="Looking for a free Photoshop alternative? Open, edit &amp; save multi-layer PSD files online in your browser. 1:1 PS shortcuts, 52 tools, zero subscriptions, no install or login required.">
   <meta name="twitter:image" content="https://photocraft.work/og-image.svg">
 
   <!-- Schema.org JSON-LD -->
@@ -54,14 +55,16 @@
           "price": "0",
           "priceCurrency": "USD"
         },
-        "description": "PhotoCraft is an open-source raster graphics editor and free Photoshop alternative. It supports multi-layer PSD files, 52 native tools, WebGPU acceleration, and Model Context Protocol automation.",
+        "description": "PhotoCraft is an open-source raster graphics editor and 100% free web Photoshop alternative. It supports multi-layer PSD files, 52 native tools, 1:1 keyboard shortcuts, WebGPU hardware acceleration, zero subscriptions, and Model Context Protocol automation.",
         "featureList": [
-          "1:1 Photoshop Shortcut and Menu Parity",
+          "1:1 Photoshop Shortcut and Menu Parity (Cmd/Ctrl+J, Cmd/Ctrl+T)",
           "Full Multi-layer PSD and PSB File Round-trip Compatibility",
-          "WebGPU In-Browser Hardware Acceleration without Plugins",
-          "52 Native Image Editing Tools and 16 Adjustment Layers",
-          "Model Context Protocol Automation for AI Agents",
-          "100% Free and Open Source under Permissive Licenses"
+          "WebGPU In-Browser Hardware Acceleration without Plugins or Installation",
+          "No Login, No Account, and Zero Subscriptions Required",
+          "52 Native Image Editing Tools and 16 Live Adjustment Layers",
+          "100% Client-Side Privacy: Images never leave local memory",
+          "Model Context Protocol Automation for AI Coding Agents",
+          "100% Free and Open Source under Permissive MIT / Apache-2.0 Licenses"
         ]
       },
       {
@@ -73,7 +76,15 @@
             "name": "What is PhotoCraft?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "PhotoCraft is a clean-room Photoshop alternative developed in pure Rust by the ArtCraft project. It delivers 1:1 workflow parity with Adobe Photoshop, including multi-layer PSD support, adjustment layers, vector shapes, and GPU-accelerated compositing."
+              "text": "PhotoCraft is a 100% free, open-source web-based Photoshop alternative and professional PSD editor built in pure Rust. It delivers 1:1 workflow parity with Adobe Photoshop, including multi-layer PSD/PSB editing, adjustment layers, vector shapes, standard shortcuts, and GPU-accelerated compositing without subscription fees or account logins."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How can I open and edit a PSD file online for free without Photoshop?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Simply visit https://photocraft.work/ in any modern web browser and drag and drop your .psd or .psb file into the workspace. PhotoCraft immediately opens all layers, masks, and blend modes using client-side WebGPU acceleration with zero uploads and no login required."
             }
           },
           {
@@ -81,39 +92,39 @@
             "name": "Why is PhotoCraft considered the best free Photoshop alternative?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "PhotoCraft preserves Photoshop's exact menus and shortcuts (like Cmd/Ctrl+J and Cmd/Ctrl+T). Unlike Adobe Photoshop, PhotoCraft is completely free, requires no monthly subscription, runs offline, and supports automated AI workflows."
+              "text": "PhotoCraft preserves Photoshop's exact menus and muscle-memory keyboard shortcuts (like Cmd/Ctrl+J, Cmd/Ctrl+T, and V for Move). Unlike Adobe Photoshop, PhotoCraft is completely free, requires no monthly subscription ($239+/yr saved), runs offline in browsers, and provides native Model Context Protocol (MCP) automation for AI agents."
             }
           },
           {
             "@type": "Question",
-            "name": "Can PhotoCraft open and edit Photoshop PSD files?",
+            "name": "Can PhotoCraft open and save multi-layer PSD files with layer styles?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes. PhotoCraft includes a custom PSD and PSB engine that preserves complex layer hierarchies, blend modes, vector masks, and layer effects like drop shadows and strokes without rasterization."
+              "text": "Yes. PhotoCraft includes a custom Rust PSD and PSB engine that preserves complex layer hierarchies, blend modes, vector masks, and layer effects like drop shadows, strokes, and glows without flattening."
             }
           },
           {
             "@type": "Question",
-            "name": "Is PhotoCraft completely free to use?",
+            "name": "Is PhotoCraft completely free to use without subscriptions or login?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes, PhotoCraft is 100% free and open source under permissive licenses. There are no subscriptions, ads, account paywalls, or feature limits."
+              "text": "Yes, PhotoCraft is 100% free and open source under permissive MIT and Apache-2.0 licenses. There are no subscriptions, ads, account paywalls, watermarks, or hidden limitations."
             }
           },
           {
             "@type": "Question",
-            "name": "Does PhotoCraft run in modern web browsers?",
+            "name": "How is PhotoCraft different from Photopea and GIMP?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes. The Rust core compiles directly to WebAssembly with WebGPU and WebGL2 acceleration, letting users open, edit, and export PSD files inside any modern web browser without installation."
+              "text": "Unlike Photopea, PhotoCraft is 100% open source, completely ad-free, accelerated by WebGPU (faster than 2D Canvas), and supports native offline desktop apps and AI MCP agents. Unlike GIMP, PhotoCraft strictly adheres to Photoshop's standard keyboard shortcuts and interface taxonomy, eliminating the retraining curve."
             }
           },
           {
             "@type": "Question",
-            "name": "What makes PhotoCraft different from GIMP as a Photoshop alternative?",
+            "name": "Are my images and PSD files uploaded to a remote server?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "While GIMP uses a custom layout and non-standard keyboard shortcuts, PhotoCraft strictly follows Photoshop's user interface and shortcut standards, allowing designers to transition instantly."
+              "text": "No. PhotoCraft operates on a strict 100% client-side privacy model. All rendering and PSD parsing occur entirely within your local browser memory via WebAssembly and WebGPU. Zero bytes of your artwork are ever uploaded to any server."
             }
           }
         ]
@@ -757,23 +768,23 @@
       <!-- Hero Section -->
       <section class="hero">
         <div class="tag-pill">
-          ⚡ Open-Source in Pure Rust · WebGPU Acceleration · Public Alpha
+          ⚡ 100% Free &amp; Open-Source · WebGPU Hardware Acceleration · No Login Required
         </div>
         <h1>PhotoCraft: Free Online Photoshop Alternative &amp; Web PSD Editor</h1>
         <p class="lead">
-          <strong>Open &amp; Edit PSD Files Online. Create Without Limits.</strong><br>
-          A free, open-source image editor inspired by Photoshop — running directly in your web browser with WebGPU acceleration. Open multi-layer PSD files, adjust colors, work with masks, and export your creations with zero subscriptions or tracking.
+          <strong>Open &amp; Edit PSD Files Online With Zero Subscriptions.</strong><br>
+          PhotoCraft is an open-source, web-based raster graphics editor and professional Photoshop alternative running directly in your browser. Open multi-layer PSD files, utilize 1:1 Photoshop shortcuts (Cmd/Ctrl+J, Cmd/Ctrl+T), apply non-destructive adjustments, and export artwork with 100% client-side privacy.
         </p>
         <div class="hero-actions">
           <button class="btn btn-primary" style="padding: 14px 28px; font-size: 16px;" onclick="launchEditor()">
-            🚀 Launch PhotoCraft Online (Free)
+            🚀 Launch Free Online (No Login)
           </button>
           <a class="btn btn-secondary" style="padding: 14px 24px; font-size: 16px;" href="https://github.com/bshx2024/photocraft" target="_blank" rel="noopener">
             ⭐ View on GitHub (v0.6.0 Alpha)
           </a>
         </div>
         <p style="font-size: 13px; color: #64748b; margin-top: 14px;">
-          🔒 100% Client-Side Privacy: Your files never leave your device · Clean-room reimplementation, not affiliated with Adobe Inc.
+          🔒 100% Client-Side Privacy: Your files never leave your device · Instant WebGPU engine, no installation required
         </p>
       </section>
 
@@ -1048,32 +1059,37 @@
         
         <details class="faq-item" open>
           <summary>What is PhotoCraft?</summary>
-          <p>PhotoCraft is a clean-room Photoshop alternative developed in pure Rust by the ArtCraft project. It delivers 1:1 workflow parity with Adobe Photoshop, including multi-layer PSD editing, layer styles, masks, adjustment layers, and GPU-accelerated compositing without subscription fees.</p>
+          <p>PhotoCraft is a 100% free, open-source web-based Photoshop alternative and professional PSD editor built in pure Rust. It delivers 1:1 workflow parity with Adobe Photoshop, including multi-layer PSD/PSB editing, adjustment layers, vector shapes, standard shortcuts, and GPU-accelerated compositing without subscription fees or account logins.</p>
         </details>
 
         <details class="faq-item">
-          <summary>Is PhotoCraft a free open-source Photoshop clone?</summary>
-          <p>Yes. PhotoCraft serves as a clean-room open-source Photoshop clone engineered in pure Rust. It maintains 1:1 parity with Photoshop's toolbars, layer blend modes, and shortcuts (such as Cmd/Ctrl+J and Cmd/Ctrl+T) so creative professionals can open and edit layered PSD files without retraining.</p>
+          <summary>How can I open and edit a PSD file online for free without Photoshop?</summary>
+          <p>Simply visit https://photocraft.work/ in any modern web browser and drag and drop your .psd or .psb file into the workspace. PhotoCraft immediately opens all layers, masks, and blend modes using client-side WebGPU acceleration with zero uploads and no login required.</p>
         </details>
 
         <details class="faq-item">
-          <summary>Where can I find PhotoCraft discussions on Reddit and GitHub?</summary>
-          <p>The PhotoCraft community and user benchmarks are actively discussed on Reddit (including r/opensource and r/rust) and on the official storytold/photocraft GitHub repository where full source code and release builds are distributed.</p>
-        </details>
-
-        <details class="faq-item">
-          <summary>How does PhotoCraft compare to Adobe Photoshop?</summary>
-          <p>PhotoCraft replicates Photoshop's exact menus, panels, and shortcuts (such as Cmd/Ctrl+J for layer duplicate and Cmd/Ctrl+T for free transform). Unlike Adobe Photoshop, PhotoCraft is completely free, requires no monthly subscription, runs offline, and supports automated AI workflows.</p>
+          <summary>Why is PhotoCraft considered the best free Photoshop alternative?</summary>
+          <p>PhotoCraft preserves Photoshop's exact menus and muscle-memory keyboard shortcuts (like Cmd/Ctrl+J, Cmd/Ctrl+T, and V for Move). Unlike Adobe Photoshop, PhotoCraft is completely free, requires no monthly subscription ($239+/yr saved), runs offline in browsers, and provides native Model Context Protocol (MCP) automation for AI agents.</p>
         </details>
 
         <details class="faq-item">
           <summary>Can PhotoCraft open and edit Photoshop PSD files?</summary>
-          <p>Yes. PhotoCraft features a custom-built PSD and PSB format engine that preserves complex layer hierarchies, blend modes, vector masks, and layer effects like drop shadows and strokes without flattening.</p>
+          <p>Yes. PhotoCraft features a custom-built PSD and PSB format engine that preserves complex layer hierarchies, blend modes, vector masks, and layer effects like drop shadows, strokes, and glows without flattening.</p>
         </details>
 
         <details class="faq-item">
-          <summary>Is PhotoCraft completely free to use?</summary>
-          <p>Yes, PhotoCraft is 100% free and open source under permissive licenses. There are no subscriptions, ads, account paywalls, watermarks, or artificial feature limitations.</p>
+          <summary>Is PhotoCraft completely free to use without subscriptions or login?</summary>
+          <p>Yes, PhotoCraft is 100% free and open source under permissive MIT and Apache-2.0 licenses. There are no subscriptions, ads, account paywalls, watermarks, or artificial feature limitations.</p>
+        </details>
+
+        <details class="faq-item">
+          <summary>How is PhotoCraft different from Photopea and GIMP?</summary>
+          <p>Unlike Photopea, PhotoCraft is 100% open source, completely ad-free, accelerated by WebGPU (faster than 2D Canvas), and supports native offline desktop apps and AI MCP agents. Unlike GIMP, PhotoCraft strictly adheres to Photoshop's standard keyboard shortcuts and interface taxonomy, eliminating the retraining curve.</p>
+        </details>
+
+        <details class="faq-item">
+          <summary>Are my images and PSD files uploaded to a remote server?</summary>
+          <p>No. PhotoCraft operates on a strict 100% client-side privacy model. All rendering and PSD parsing occur entirely within your local browser memory via WebAssembly and WebGPU. Zero bytes of your artwork are ever uploaded to any server.</p>
         </details>
 
         <details class="faq-item">
@@ -1082,18 +1098,8 @@
         </details>
 
         <details class="faq-item">
-          <summary>How does PhotoCraft differ from GIMP as a Photoshop alternative?</summary>
-          <p>While GIMP uses a custom interface and non-standard keyboard shortcuts, PhotoCraft strictly follows Photoshop's user interface and shortcut standards, allowing Photoshop users to switch immediately with zero retraining.</p>
-        </details>
-
-        <details class="faq-item">
           <summary>Where can I download the native desktop version of PhotoCraft?</summary>
           <p>Native standalone desktop binaries for Windows, macOS, Linux, and FreeBSD are available on the official GitHub repository releases page without web wrappers or Electron bloat.</p>
-        </details>
-
-        <details class="faq-item">
-          <summary>Does PhotoCraft support graphics drawing tablets and stylus pens?</summary>
-          <p>Yes. PhotoCraft includes native pen tablet input support across Windows, macOS, and Linux, handling pressure sensitivity, tilt, and rotation dynamics seamlessly for digital painting.</p>
         </details>
 
         <details class="faq-item">

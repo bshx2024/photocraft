@@ -173,6 +173,22 @@ export default {
       await trackRequest(request, env);
     }
 
+    // 3.5. GEO 智能内容协商 (Content Negotiation for AI Agents)
+    const acceptHeader = request.headers.get('accept') || '';
+    if ((pathname === '/' || pathname === '/index.html') && acceptHeader.includes('text/markdown')) {
+      if (env && env.ASSETS) {
+        const llmReq = new Request(new URL('/llms.txt', request.url), request);
+        const llmRes = await env.ASSETS.fetch(llmReq);
+        const headers = new Headers(llmRes.headers);
+        headers.set('Content-Type', 'text/markdown; charset=utf-8');
+        return new Response(llmRes.body, {
+          status: llmRes.status,
+          statusText: llmRes.statusText,
+          headers
+        });
+      }
+    }
+
     // 4. 返回实际页面内容
     if (env && env.ASSETS) {
       return env.ASSETS.fetch(request);

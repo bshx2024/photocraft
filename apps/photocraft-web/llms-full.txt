@@ -94,7 +94,17 @@ PhotoCraft is the first professional image editor engineered from the ground up 
 
 ---
 
-## 7. Comparative Analysis
+## 7. Comparative Analysis & Benchmark Matrix
+
+| Feature / Metric | PhotoCraft | Adobe Photoshop | Photopea | GIMP |
+| :--- | :--- | :--- | :--- | :--- |
+| **Pricing** | **100% Free Open-Source** | $239.88+/year subscription | Ad-supported ($5/mo for ad-free) | Free Open-Source |
+| **Account Required** | **None (Instant Access)** | Adobe ID & CC Login | Optional | None |
+| **Photoshop Shortcuts** | **1:1 Native Parity** | Native Standard | Good parity | Custom non-standard |
+| **PSD File Fidelity** | **Pixel-Accurate (300+ tests)**| Native Standard | Good layer support | Often breaks styles |
+| **Runtime & Performance**| **WebGPU (Rust WASM) + Desktop**| Native Desktop (C++) | Web Canvas 2D (JavaScript) | Native Desktop (C) |
+| **Data Privacy** | **100% Local / Zero Uploads** | Cloud Sync & Telemetry | Ad trackers & server scripts | 100% Local |
+| **AI Agent Support** | **Native MCP Server Protocol** | Closed Plugin API | Not supported | Script-fu only |
 
 ### PhotoCraft vs Adobe Photoshop
 - **Cost**: PhotoCraft is 100% free; Photoshop costs $239.88/year or more.
@@ -113,7 +123,18 @@ PhotoCraft is the first professional image editor engineered from the ground up 
 
 ---
 
-## 8. Frequently Asked Questions (FAQ)
+## 8. How-To Instructions (For Web & AI Agents)
+
+### Opening and Editing a PSD File Online
+1. Visit `https://photocraft.work/` in any modern browser (Chrome, Edge, Firefox, Safari 18+).
+2. Drag and drop any `.psd` or `.psb` file onto the browser viewport.
+3. The file is parsed locally in WebAssembly and rendered onto a WebGPU canvas with all layers, layer masks, and blend modes intact.
+4. Use standard Photoshop keyboard shortcuts (e.g., `Cmd/Ctrl+J` to duplicate layer, `Cmd/Ctrl+T` for Free Transform, `B` for Brush).
+5. Save changes via File > Save As (or `Cmd/Ctrl+Shift+S`) to export back to layered PSD or web formats (PNG/WebP/JPEG).
+
+---
+
+## 9. Frequently Asked Questions (FAQ)
 
 **Q: Can PhotoCraft really open and save complex multi-layer PSD files?**  
 A: Yes. PhotoCraft is tested against an oracle test corpus of over 300 real-world Photoshop-generated PSD files, verifying that layer blend modes, masks, and adjustment effects round-trip accurately without flattening.
@@ -123,3 +144,4 @@ A: No. PhotoCraft is 100% free software released under MIT / Apache-2.0 licenses
 
 **Q: Where can I use PhotoCraft?**  
 A: You can use it directly in any WebGPU-capable browser at https://photocraft.work/, or compile and run the native desktop version from https://github.com/bshx2024/photocraft.
+
